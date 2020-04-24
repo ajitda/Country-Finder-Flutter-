@@ -16,6 +16,7 @@ class AllCountries extends StatefulWidget {
 
 class _AllCountriesState extends State<AllCountries> {
   Future<List> countries;
+  bool isSearching = false;
   Future<List> getCountries() async {
     var response = await Dio().get('https://restcountries.eu/rest/v2/all');
     return response.data;
@@ -29,13 +30,40 @@ class _AllCountriesState extends State<AllCountries> {
 
   @override
   Widget build(BuildContext context) {
-    print(countries);
+//    print(countries);
     getCountries();
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.pink,
-        title: Text('All Countries'),
-      ),
+          backgroundColor: Colors.pink,
+          title: !isSearching
+              ? Text('All Countries')
+              : TextField(
+                  style: TextStyle(color: Colors.white),
+                  decoration: InputDecoration(
+                    icon: Icon(Icons.search, color: Colors.white),
+                    hintText: "Search Country Here",
+                    hintStyle: TextStyle(color: Colors.white),
+                  ),
+                ),
+          actions: <Widget>[
+            isSearching ?
+            IconButton(
+              icon: Icon(Icons.cancel),
+              onPressed: () {
+                setState(() {
+                  isSearching = !this.isSearching;
+                });
+              },
+            ) :
+            IconButton(
+              icon: Icon(Icons.search),
+              onPressed: () {
+                setState(() {
+                  isSearching = !this.isSearching;
+                });
+              },
+            )
+          ]),
       body: Container(
           padding: EdgeInsets.all(10),
           child: FutureBuilder<List>(
